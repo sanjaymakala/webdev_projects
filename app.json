@@ -1,23 +1,34 @@
 {
-  "name": "React Redux Blog CRUD app",
-  "description": "A sample Blog app that shows how to build React Redux CRUD app",
-  "repository": "https://github.com/rajaraodv/react-redux-blog",
-  "logo": "http://node-js-sample.herokuapp.com/node.svg",
-  "keywords": ["node", "express", "React", "React.js", "React", "Redux", "JavaScript", "MongoDB", "jwt"],
+  "name": "goof",
+  "description": "A Snyk vulnerable Goof app on Heroku",
+  "repository": "https://github.com/snyk/goof",
+  "logo": "https://snyk.io/wp-content/uploads/title-card-avatar.png",
+  "keywords": [
+    "snyk",
+    "goof",
+    "heroku",
+    "node",
+    "security",
+    "vulnerabilities"
+  ],
   "image": "heroku/nodejs",
+  "scripts": {},
   "env": {
-  	"NODE_ENV": {
-  		"description": "Node environment",
-  		"value": "production"
-  	},
-    "JWT_SECRET": {
-      "description": "A secret string to generate JWT tokens (REQUIRED)",
-      "value":""
-    },
-    "FROM_EMAIL": {
-      "description": "A *validated* from-email address to send emails from(REQUIRED)",
-      "value":""
+    "MONGOLAB_URI": {
+      "required": true
     }
   },
-  "addons": ["mongolab", "postmark:10k"]
+  "formation": {
+    "web": {
+      "quantity": 1
+    }
+  },
+  "addons": [
+    "mongolab"
+  ],
+  "buildpacks": [
+    {
+      "url": "heroku/nodejs"
+    }
+  ]
 }
